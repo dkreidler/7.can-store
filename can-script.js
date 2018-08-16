@@ -32,12 +32,13 @@ request.send();
 
 // wait for response to complete
 request.onload = function() {
-    if (ok) {
-        something
+    if (request.status === '200' || request.readyState === 4) {
+        products = request.response;
+        initialize();
     } else {
-        console.log('Network request for products.json failed with response ' + response.status + ': ' + response.statusText);
+        console.log('Network request for products.json failed with response ' + request.status + ': ' + request.statusText);
     }
-}
+};
 
 
 // sets up the app logic, declares required variables, contains all the other functions
