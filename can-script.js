@@ -33,9 +33,13 @@ request.send();
 // wait for response to complete
 request.onload = function() {
     if (request.status === '200' || request.readyState === 4) {
+        // set products[] equal to the response, which we already set
+        // to json format with the responseType command above.
         products = request.response;
         initialize();
     } else {
+        // not seeing this work yet. When the code fails, it fails spectacularly
+        // ignoring this completely...
         console.log('Network request for products.json failed with response ' + request.status + ': ' + request.statusText);
     }
 };
@@ -172,9 +176,35 @@ function initialize() {
     function fetchBlob(product) {
         // construct the URL path to the image file from the product.image property
         var url = 'images/' + product.image;
+
+        // replace with XHR
+        // create a variable for the XHR
+        var getBlob = new XMLHttpRequest();
+
+        // HTTP method is GET from resource
+        getBlob.open('GET', url);
+
+        // tell XHR to be expecting a JSON response
+        // getBlob.responseType = 'json';
+
+        // send request with .send() method
+        getBlob.send();
+        // wait for response to complete
+        getBlob.onload = function() {
+            if (getBlob.status === '200' || getBlob.readyState === 4) {
+                //console.log(getBlob);
+                objectURL = getBlob.responseURL;
+                showProduct(objectURL, product);
+            } else {
+                // not seeing this work yet. When the code fails, it fails spectacularly
+                // ignoring this completely...
+                console.log('Network request for ' + product.name + ' failed with response ' + response.status + ': ' + response.statusText);
+            }
+        };
+
         // Use fetch to fetch the image, and convert the resulting response to a blob
         // Again, if any errors occur we report them in the console.
-        fetch(url).then(function(response) {
+        /* fetch(url).then(function(response) {
             if (response.ok) {
                 response.blob().then(function(blob) {
                     // Convert the blob to an object URL — this is basically an temporary internal URL
@@ -186,7 +216,10 @@ function initialize() {
             } else {
                 console.log('Network request for "' + product.name + '" image failed with response ' + response.status + ': ' + response.statusText);
             }
-        });
+        }); */
+
+
+
     }
 
     // Display a product inside the <main> element
